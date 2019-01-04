@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.chatroom.dao.IWebMessageDao">
+	<!-- 登陆聊天室 -->
+	<select id="LoginUser" resultType="user">
+		SELECT * FROM `user` WHERE `email` =  #{obj.email};
+	</select>
+	<!-- 修改登陆状态 -->
+	<update id="updateUserType">
+		UPDATE 
+		  `user` 
+		SET
+		  `type` = #{obj.type}
+		WHERE `id` = #{obj.id};
+	</update>
+	<!-- Map好友 -->
+	<resultMap type="friend" id="Friend">
+		<id column="uId" property="uId"/>
+		<result column="fId" property="fId"/>
+		<result column="type" property="type"/>
+		<collection property="owner" column="uId" select="queryUser"></collection>
+		<collection property="aide" column="fId" select="queryUser"></collection>
+	</resultMap>
+	<!-- 查看所有好友 -->
+	<select id="queryFriendList" resultMap="Friend">
+		SELECT * FROM `friend` WHERE `uId` =  #{obj.id};
+	</select>
+	<!-- 查看用户信息 -->
+	<select id="queryUser" resultType="user">
+		SELECT * FROM `user` WHERE `id` = #{0}
+	</select>
+</mapper>

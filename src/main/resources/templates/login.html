@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>清泉聊天网页版测试V1.0</title>
+		<link href="/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="shortcut icon" href="/img/logo.jpg" />
+	</head>
+
+	<body style="background: url(/img/2zrdI1g.jpg) no-repeat 50%;background-size: auto auto;background-size: cover;height: 400px;">
+		<div class="container" style="margin-top: 10%;">
+			<div class="center-block max-width border-radius " style="width: 370px;margin: auto;">
+					<form action="/c/user/Login" method="post" name="Getform" class="form-control" style="margin-top: 10px;">
+						<h3 style="text-align: center;margin-top: 20px;margin-bottom: 20px;">清泉聊天</h3>
+						<div class="form-group row " >
+						    <label class="col-sm-2 control-label">邮箱</label>
+						    <div class="col-sm-10">
+						      <input type="email" class="form-control" name="email" th:value="${email}" placeholder="请输入邮箱">
+						    </div>
+						</div>
+						<div class="form-group row " style="margin-top: 30px;">
+						    <label class="col-sm-2 control-label">密码</label>
+						    <div class="col-sm-10">
+						      <input type="password" class="form-control" name="password" th:value="${pwd}" placeholder="请输入密码">
+						    </div>
+						</div>
+						<div class="form-group row" style="margin-top: 30px;">
+							<button type="button" class="btn btn-primary" style="margin:auto;width: 200px;" onclick="Login()">登陆</button>
+						</div>
+						<div class="form-group row" style="margin-top: 30px;text-align: center;" >
+							<span id="msg" th:text="${msg}" style="margin: auto;color:red"></span>						
+						</div>
+						<div class="form-group row" style="margin: auto;position: relative;left: 185px;">
+							目前版本：V1.0测试版
+						</div>
+						
+					</form>
+					
+			</div>
+			<div class="center-block max-width border-radius" style="margin: auto;position: absolute;left: 530px;margin-top: 10px;">
+				<span style="color: red;">提示：</span>本版本不存储任何聊天记录，如有需要自行保存<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新功能陆续更新...请敬请期待~
+			</div>
+		</div>
+		<script type="text/javascript" src="/js/jquery-slim.min.js"></script>
+		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			function Login(){
+				if($("[name=email]").val().length == 0){
+					$("#msg").html("请输入邮箱");
+				} else if($("[name=password]").val().length == 0){
+					$("#msg").html("请输入密码");
+				} else {
+					$("#msg").html("");
+					window.Getform.submit();
+				}
+			}
+		</script>
+	</body>
+
+</html>

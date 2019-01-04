@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8" />	
+		<title>清泉聊天网页版测试V1.0</title>
+		<link href="/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="shortcut icon" href="/img/logo.jpg" />
+		<script type="text/javascript" src="/js/jquery-slim.min.js"></script>
+		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+		<style>
+			body{
+				font-family: Helvetica Neue,Helvetica,Hiragino Sans GB,Microsoft YaHei,\5FAE软雅黑,Arial,sans-serif;
+			}
+			.bubble-you p{
+				/*background:url(img/Bubble.jpg) no-repeat 100%;
+				background-size: 100% 100% ;*/
+				background: #71DD8A;
+				max-width: 500px;
+				padding: 10px 18px;
+				display: inline-block;
+				border-radius: 10px;
+			}
+			.bubble-you span{
+				display: block;
+				font-size: 14px;
+				font-family: "黑体";
+				text-indent: 2em;
+				max-width: 500px;
+			}
+			.bubble-me{
+				display:block;
+				float: right;
+			}
+			.bubble-me p{
+				/*background:url(img/Bubble.jpg) no-repeat 100%;
+				background-size: 100% 100% ;*/
+				background: white;
+				max-width: 500px;
+				padding: 10px 18px;
+				display: inline-block;
+				border-radius: 10px;
+			}
+			.bubble-me span{
+				display: block;
+				font-size: 14px;
+				font-family: "黑体";
+				text-indent: 2em;
+				max-width: 500px;
+				
+			}
+		</style>
+	</head>
+
+	<body style="background: url(/img/2zrdI1g.jpg) no-repeat 50%;background-size: auto auto;background-size: cover;">
+		<div class="container container-fluid bg-white" style="padding: 0px;border-radius: 5px;height: 752px;">
+			<!-- 好友框 -->
+			<div class="container border-radius" style="width: 30%;display: inline-block;padding: 25px;background: #2e3238;border-radius: 5px;height: 754px;">
+				<div class="control-label">
+					<img th:src="|/img/${session.user.imgName}|" class="img-responsive" width="50" height="50" style="border-radius: 5px">
+					<span style="vertical-align: auto;color: white;font-size: 18px;line-height: 31px;margin-left: 5px;" th:text="${session.user.name}"></span>
+					<div class="btn-group" role="group" style="color: white;float: right;">
+						<button class="btn btn-default dropdown-toggle" style="background: #2e3238;color: white;float: right;" type="button" data-toggle="dropdown">
+					    	<span class="caret"></span>
+						</button>
+					</div>
+				</div>
+				<div class="row" style="margin:auto;margin-top: 20px;margin-bottom:10px;background: black;">
+					<img class="col-md-1" style="background-image: url(/img/5af37c4a880a95586cd41c5b251d5562@1x.png);background-position: -60px -432px;width: 30px;height: 30px;border: 1px solid window-inset;" />
+					<input type="text" class="col-md" style="height:30px;background: black;border: 1px solid black;color: white;size: 10px;width: 150px;" placeholder="搜索好友"/>
+				</div>
+				<div style="border-bottom: 1px solid black;"></div>
+				<div class="container_fluid" style="overflow: auto;height:580px;overflow-x: hidden;margin-top: 15px;background: #2a2730;">
+					<!-- 在线 -->
+					<p id="online" style="color: white;border: 1px solid wheat;height: 40px;padding: 5px;margin-bottom: 0px;background:black;text-align: center;border-radius: 10px;">在线</p>
+					<div class="row" style="padding: 5px;">
+					   
+				   	 </div>
+				    <!-- 离线 -->
+				   <p id="offline" style="color: white;border: 1px solid wheat;height: 40px;padding: 5px;margin-bottom: 0px;background:black;text-align: center;border-radius: 10px;">离线</p>
+					<div class="row" style="padding: 5px;">
+					   
+				   	 </div>
+				   	 <!-- 好友申请 -->
+				   	 <p id="friend" style="color: white;border: 1px solid wheat;height: 40px;padding: 5px;margin-bottom: 0px;background:black;text-align: center;border-radius: 10px;">好友申请 </p>
+					<div class="row" style="padding: 5px;">
+					    <p class="bg-dark" style="height: 50px;width: 310px;padding-left:20px;padding-top: 4px;margin-bottom: 0px;border-bottom: 1px solid black;">
+					    	<img src="img/TestPng.png" class="img-rounded img-responsive center-block" width="40" height="40" style="border-radius: 5px;">
+					    	<span style="color: white;font-size: 14px;line-height: 20px;margin-left: 5px;vertical-align:top;">龙等等</span>
+					    </p>
+	 					 <p class="bg-dark" style="height: 50px;background: white;width: 310px;padding-left:20px;padding-top: 4px;margin-bottom: 0px;border-bottom: 1px solid black;">
+					    	<img src="img/TestPng.png" class="img-rounded img-responsive center-block" width="40" height="40" style="border-radius: 5px;">
+				    		<span style="color: white;font-size: 14px;line-height: 20px;margin-left: 5px;vertical-align:top;">龙等等</span>
+					    </p>
+				   	 </div>
+				</div>
+			</div>
+			<!-- 聊天框 -->
+			<div class="container" style="position: relative;top: -752px;left: 172px;margin-top: -2px;width: 800px;height: 752px;background: #eee;">
+				<div id="MessageUser" class="control-label" style="border-bottom:2px solid gainsboro;text-align: center;padding: 10px;font-size: 16px;line-height: 30px;font-weight: bold;">
+					龙等等
+				</div>
+				<div id="Show" style="height: 530px;width: 800px;">
+					<ul class="list-unstyled" style="height: 530px;width: 760px;overflow: auto;">
+						<!-- 回复方 -->
+						<!-- <li style="margin-top: 10px;" class="bubble-you">
+							<img src="img/TestPng.png" class="img-rounded img-responsive center-block" width="40" height="40" style="border-radius: 40px;vertical-align: top;margin-right: 5px;">
+							<p>
+								<span>
+									你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！
+								</span>
+							</p>
+						</li> -->
+						<!-- 发送 方-->
+						<!-- <li style="margin-top: 10px;overflow: auto;" >
+							<div class="bubble-me">
+								<p>
+									<span>
+										你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！你好二货！！！！
+									</span>
+								</p>
+								<img src="img/TestPng.png" class="img-rounded img-responsive center-block" style="vertical-align: top;margin-left: 5px;border-radius: 40px;" width="40" height="40"  >
+							</div>
+						</li> -->
+						
+					</ul>
+				</div>
+				<div style="border-top: 2px solid gainsboro;padding: 3px;background: white;">
+					<a href="#" style="height: 30px;">
+						<img class="col-md-1 popover-show" style="background-image: url(/img/5af37c4a880a95586cd41c5b251d5562@1x.png);background-position: -404px -398px;width: 30px;height: 30px;border: 1px solid window-inset;" />
+					</a>
+					<textarea id="MessageTxet" class="form-control" rows="3" style="border: 1px solid whitesmoke;font-size: 14px;line-height: 1.6;"></textarea>
+					<div style="margin-top: 7px;margin-bottom: 5px">
+						<input type="button" id="send" onclick="Send()" disabled="disabled" value="发送" class="btn btn-success" style="margin-left: 87%;height: 30px;font-size: 14px;padding: 3px 25px;" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 重连模态框 -->
+		<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myModal" >
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		     <div class="modal-header">
+		     	<h4 class="modal-title" id="gridSystemModalLabel">正在重连</h4>
+		      </div>
+		      <div class="modal-body">
+		      	
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</body>
+	<!-- WebSorket -->
+	<script type="text/javascript" src="/js/WebSorket.js"></script>
+	<!-- 动态样式JS -->
+	<script type="text/javascript">
+		$(function() {
+			//开启通讯
+			initSocket();
+		})
+		//切换好友发送
+		function cut(name,id){
+			alert(name,id);
+			$("#send").prop("disabled",false);
+		}
+		
+	</script>
+
+</html>
