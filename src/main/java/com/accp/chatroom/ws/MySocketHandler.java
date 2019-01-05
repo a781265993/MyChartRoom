@@ -23,7 +23,6 @@ import com.accp.chatroom.pojo.user;
 import com.accp.chatroom.util.JsonObjectUtil;
 import com.accp.chatroom.ws.cfg.HttpSessionConfigurator;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 @ServerEndpoint(value = "/ws/sys", configurator = HttpSessionConfigurator.class)
 @Controller
@@ -46,7 +45,7 @@ public class MySocketHandler {
 		if (_user != null) {
 			this.uId = _user.getId();
 			usersMap.put(this.uId, session);// 存入会话信息
-			// 刷新好友列表:每15m一次
+			// 刷新好友列表:每30m一次
 			new Thread() {
 				public void run() {
 					// 在线数量
@@ -97,7 +96,7 @@ public class MySocketHandler {
 								Offline = offline;
 								ApplyFor = applyFor;
 							}
-							Thread.sleep(15 * 1000);
+							Thread.sleep(30 * 1000);
 						} catch (Exception e) {
 							break;
 						}

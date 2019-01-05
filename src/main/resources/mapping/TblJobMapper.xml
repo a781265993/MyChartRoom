@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.chatroom.dao.ITblJobDao">
+
+	<insert id="saveJob">
+		insert into
+		tbl_job(jname,jgroup,jcron,jdes,jstate,jdate,juser)
+		values(#{job.jname},#{job.jgroup},#{job.jcron},#{job.jdes},0,now(),'admin')
+	</insert>
+
+	<select id="queryAllJob" resultType="TblJob">
+		select * from tbl_job
+	</select>
+
+	<delete id="deleteJob">
+		delete from tbl_job where jname=#{jname} and
+		jgroup=#{jgroup}
+	</delete>
+
+	<update id="updateJobState">
+		update tbl_job set
+		jstate=#{jstate}
+		where jname=#{jname} and jgroup=#{jgroup}
+	</update>
+	
+	<!-- 删除(修改状态)聊天记录 -->
+	<update id="deleteMessage">
+		UPDATE 
+		  `messages` 
+		SET
+		  `type` = 1
+	</update>
+</mapper>

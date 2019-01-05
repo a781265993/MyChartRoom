@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>任务调度</title>
+</head>
+<body>
+	<div>
+		任务名:<input type="text" id="jname" /> 
+		任务组:<input type="text" id="jgroup" /> 
+		任务类型: 
+		<select id="jdes">
+			<option value="定时报表任务">定时报表任务</option>
+			<option value="定时数据库备份任务">定时数据库备份任务</option>
+		</select> 
+		任务规则: 
+		<select id="jcron">
+			<option value="每隔5秒执行">每隔5秒执行</option>
+			<option value="每隔15秒执行">每隔15秒执行</option>
+		</select> 
+		<input type="button" id="add" value="添加任务" />
+	</div>
+	<table border="1" width="800">
+		<thead>
+			<tr>
+				<th width="5%">序号</th>
+				<th width="10%">任务名</th>
+				<th width="10%">任务组</th>
+				<th width="10%">任务类型</th>
+				<th width="10%">任务规则</th>
+				<th width="10%">任务状态</th>
+				<th width="15%">创建时间</th>
+				<th width="10%">创建人</th>
+				<th width="20%">操作</th>
+			</tr>
+		</thead>
+		<tbody id="tbl">
+
+		</tbody>
+	</table>
+</body>
+<script type="text/javascript" src="/js/jquery-1.8.3.js"></script>
+<script type="text/javascript">
+	fnLoadList();
+	function fnLoadList(){
+		$.getJSON("/api/job/list",function(jsonArr){
+			$("#tbl").empty();
+			$.each(jsonArr,function(i,obj){
+				$("#tbl").append("<tr><td>"+(i+1)+"</td><td>"+(obj.jname)+"</td><td>"+(obj.jgroup)+"</td><td>"+(obj.jdes)+"</td><td>"+(obj.jcron)+"</td><td>"+(obj.jstate==0?'运行':'暂停')+"</td><td>"+(obj.jdate)+"</td><td>"+(obj.juser)+"</td><td><button class='del'>移除</button><button class='pause'>暂停</button><button class='resume'>恢复</button></td></tr>");
+			});
+		});
+	}
+
+	//新增
+	$("#add").click(function() {
+		if($("#jname").val().length==0){
+			alert("请输入任务名");
+			return;
+		}else if($("#jname").val().length==0){
+			alert("请输入任务组");
+			return;
+		}
+		$.post("/api/job/add", {
+			jname : $("#jname").val(),
+			jgroup : $("#jgroup").val(),
+			jcron : $("#jcron").val(),
+			jdes : $("#jdes").val()
+		}, function(json) {
+			if (json.code == 200) {
+				alert("添加并启动成功");
+				fnLoadList();
+			}
+		});
+	});
+	
+	//移除
+	$(document).on("click",".del",function(){
+		var jname=$(this).parents("tr").find("td:eq(1)").text();
+		var jgroup=$(this).parents("tr").find("td:eq(2)").text();
+		$.ajax("/api/job/del/"+jname+"/"+jgroup,{
+			type:"delete",
+			dataType:"json",
+			success:function(data){
+				fnLoadList();
+			}
+		});
+	});
+	//暂停
+	$(document).on("click",".pause",function(){
+		var jname=$(this).parents("tr").find("td:eq(1)").text();
+		var jgroup=$(this).parents("tr").find("td:eq(2)").text();
+		$.ajax("/api/job/pause/"+jname+"/"+jgroup,{
+			type:"put",
+			dataType:"json",
+			success:function(data){
+				fnLoadList();
+			}
+		});
+	});
+	//恢复
+	$(document).on("click",".resume",function(){
+		var jname=$(this).parents("tr").find("td:eq(1)").text();
+		var jgroup=$(this).parents("tr").find("td:eq(2)").text();
+		$.ajax("/api/job/resume/"+jname+"/"+jgroup,{
+			type:"put",
+			dataType:"json",
+			success:function(data){
+				fnLoadList();
+			}
+		});
+	});
+</script>
+</html>

@@ -11,8 +11,31 @@ package com.accp.chatroom.pojo;
 public class messages {
 	private int uId;//用户ID
 	private int fId;//好友ID
-	private user friend;//好友信息
 	private String content;//消息内容
+	private int type;//删除状态
+
+	private user owner;//用户
+	private user aide;//好友
+	
+	
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public user getOwner() {
+		return owner;
+	}
+	public void setOwner(user owner) {
+		this.owner = owner;
+	}
+	public user getAide() {
+		return aide;
+	}
+	public void setAide(user aide) {
+		this.aide = aide;
+	}
 	public int getuId() {
 		return uId;
 	}
@@ -25,23 +48,16 @@ public class messages {
 	public void setfId(int fId) {
 		this.fId = fId;
 	}
-	public user getFriend() {
-		return friend;
-	}
-	public void setFriend(user friend) {
-		this.friend = friend;
-	}
 	public String getContent() {
 		return content;
 	}
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public messages(int uId, int fId, user friend, String content) {
+	public messages(int uId, int fId, String content) {
 		super();
 		this.uId = uId;
 		this.fId = fId;
-		this.friend = friend;
 		this.content = content;
 	}
 	public messages() {

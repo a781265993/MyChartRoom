@@ -22,6 +22,10 @@ public class LoginAction {
 	public String goToLogin() {
 		return "login";
 	}
+	@GetMapping("gojob")
+	public String goToJob() {
+		return "job";
+	}
 	
 	@PostMapping("Login")
 	public String Login(user User,HttpSession session,Model model) {

@@ -33,4 +33,7 @@
 	<select id="queryUser" resultType="user">
 		SELECT * FROM `user` WHERE `id` = #{0}
 	</select>
+	<!-- 发送聊天信息 -->
+	<!-- 查看聊天信息 -->
+	<!-- 删除聊天信息 -->
 </mapper>
