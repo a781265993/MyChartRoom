@@ -12,17 +12,23 @@ public class messages {
 	private int uId;//用户ID
 	private int fId;//好友ID
 	private String content;//消息内容
-	private int type;//删除状态
+	private int readtype;//阅读状态
+	private int deletetype;//删除状态
 
 	private user owner;//用户
 	private user aide;//好友
 	
-	
-	public int getType() {
-		return type;
+	public int getReadtype() {
+		return readtype;
 	}
-	public void setType(int type) {
-		this.type = type;
+	public void setReadtype(int readtype) {
+		this.readtype = readtype;
+	}
+	public int getDeletetype() {
+		return deletetype;
+	}
+	public void setDeletetype(int deletetype) {
+		this.deletetype = deletetype;
 	}
 	public user getOwner() {
 		return owner;

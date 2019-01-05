@@ -1,6 +1,7 @@
 package com.accp.chatroom.ws;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,11 +19,13 @@ import org.springframework.stereotype.Controller;
 
 import com.accp.chatroom.biz.WebMessageBiz;
 import com.accp.chatroom.pojo.friend;
+import com.accp.chatroom.pojo.messages;
 import com.accp.chatroom.pojo.sending;
 import com.accp.chatroom.pojo.user;
 import com.accp.chatroom.util.JsonObjectUtil;
 import com.accp.chatroom.ws.cfg.HttpSessionConfigurator;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 @ServerEndpoint(value = "/ws/sys", configurator = HttpSessionConfigurator.class)
 @Controller
@@ -36,7 +39,6 @@ public class MySocketHandler {
 	public static ApplicationContext ac;// 非常重要
 
 	// 开启连接
-
 	@OnOpen
 	public void onopen(Session session, EndpointConfig config) {
 		WebMessageBiz messageBiz = (WebMessageBiz) ac.getBean("messageBiz");
@@ -45,7 +47,7 @@ public class MySocketHandler {
 		if (_user != null) {
 			this.uId = _user.getId();
 			usersMap.put(this.uId, session);// 存入会话信息
-			// 刷新好友列表:每30m一次
+			// 刷新好友列表:每30s一次
 			new Thread() {
 				public void run() {
 					// 在线数量
@@ -54,23 +56,8 @@ public class MySocketHandler {
 					int Offline = 0;
 					// 申请数量
 					int ApplyFor = 0;
-					for (friend f : messageBiz.queryFriendList(_user)) {
-						if (f.getType() == 0) {
-							ApplyFor++;
-						} else if (f.getAide().getType() == 1) {
-							Online++;
-						} else if (f.getAide().getType() == 0) {
-							Offline++;
-						}
-					}
 					JsonObjectUtil util = new JsonObjectUtil();
 					util.setType("users");
-					try {
-						util.setContent(messageBiz.queryFriendList(_user));
-						usersMap.get(uId).getBasicRemote().sendText(util.toJSONString());
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
 					while (true) {
 						try {
 							// 在线数量
@@ -81,11 +68,11 @@ public class MySocketHandler {
 							int applyFor = 0;
 							for (friend f : messageBiz.queryFriendList(_user)) {
 								if (f.getType() == 0) {
-									online++;
-								} else if (f.getAide().getType() == 1) {
-									offline++;
-								} else if (f.getAide().getType() == 0) {
 									applyFor++;
+								} else if (f.getAide().getType() == 1) {
+									online++;
+								} else if (f.getAide().getType() == 0) {
+									offline++;
 								}
 							}
 							if (online > Online || offline > Offline || applyFor > ApplyFor) {
@@ -103,8 +90,33 @@ public class MySocketHandler {
 					}
 				}
 			}.start();
-			// 刷新聊天消息
-
+			// 刷新聊天消息:每5s刷新
+			new Thread() {
+				@Override
+				public void run() {
+					// 收件人对象
+					user aide = new user();
+					aide.setId(uId);
+					// 总聊天记录
+					int Count = 0;
+					// JSON序列化
+					JsonObjectUtil util = new JsonObjectUtil();
+					util.setType("message");
+					while (true) {
+						try {
+							int count = messageBiz.listMessages(null, aide).size();
+							if(count > Count) {
+								util.setContent(messageBiz.listMessages(null, aide));
+								usersMap.get(uId).getBasicRemote().sendText(util.toJSONString());
+								count = Count; 
+							}
+							Thread.sleep(5 * 1000);
+						} catch (Exception e) {
+							break;
+						}
+					}
+				}
+			}.start();
 		} else {
 			this.onerror(session, new Throwable());
 		}
@@ -143,7 +155,7 @@ public class MySocketHandler {
 			if (!"ping".equals(msg)) {
 				sending obj = JSON.parseObject(msg, sending.class);
 				if ("sendUser".equals(obj.getType())) {
-					sendUser(obj.getUid(), obj.getContent());
+					sendUser(obj.getUid(),obj.getFid(),obj.getContent());
 				} else if ("sendUsers".equals(obj.getType())) {
 					sendUsers(obj.getContent());
 				}
@@ -155,9 +167,11 @@ public class MySocketHandler {
 	}
 
 	// 单发
-	private void sendUser(Integer uid, String msg) {
+	private void sendUser(Integer uid,Integer fid, String msg) {
 		try {
-			usersMap.get(uid).getBasicRemote().sendText(msg);
+			WebMessageBiz messageBiz = (WebMessageBiz) ac.getBean("messageBiz");
+			messageBiz.sendMessage(uid, fid, msg);
+			usersMap.get(fid).getBasicRemote().sendText(msg);
 		} catch (IOException e) {
 			return;
 		}
@@ -165,11 +179,17 @@ public class MySocketHandler {
 
 	// 群发
 	private void sendUsers(String msg) {
+		WebMessageBiz messageBiz = (WebMessageBiz) ac.getBean("messageBiz");
 		for (Session session : usersMap.values()) {
 			try {
 				session.getBasicRemote().sendText(msg);
 			} catch (IOException e) {
 				continue;
+			}
+		}
+		for (Integer id : usersMap.keySet()) {
+			if(id != 2) {
+				messageBiz.sendMessage(null, id, msg);
 			}
 		}
 	}

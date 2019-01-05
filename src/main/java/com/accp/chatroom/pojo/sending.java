@@ -12,7 +12,15 @@ public class sending {
 	
 	private String type;//发送消息类型
 	private String content;//发送消息内容
-	private Integer uid;//收件人id
+	private Integer uid;//发件人id
+	private Integer fid;//收件人id
+	
+	public Integer getFid() {
+		return fid;
+	}
+	public void setFid(Integer fid) {
+		this.fid = fid;
+	}
 	public String getType() {
 		return type;
 	}

@@ -32,6 +32,6 @@
 		UPDATE 
 		  `messages` 
 		SET
-		  `type` = 1
+		  `deletetype` = 1
 	</update>
 </mapper>

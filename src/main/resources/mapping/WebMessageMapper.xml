@@ -27,13 +27,40 @@
 	</resultMap>
 	<!-- 查看所有好友 -->
 	<select id="queryFriendList" resultMap="Friend">
-		SELECT * FROM `friend` WHERE `uId` =  #{obj.id};
+		SELECT * FROM `friend` WHERE 1=1 
+		<if test="obj.id != 2">
+			AND `uId` =  #{obj.id};
+		</if>
 	</select>
 	<!-- 查看用户信息 -->
 	<select id="queryUser" resultType="user">
 		SELECT * FROM `user` WHERE `id` = #{0}
 	</select>
+	
 	<!-- 发送聊天信息 -->
+	<insert id="saveMessage">
+		INSERT INTO `messages` (`uId`, `fId`, `content`) 
+		VALUES (#{uid}, #{fid}, #{msg}) ;
+	</insert>
+	<!-- Map消息 -->
+	<resultMap type="messages" id="Messages">
+		<id column="uId" property="uId"/>
+		<result column="fId" property="fId"/>
+		<result column="content" property="content"/>
+		<result column="readtype" property="readtype"/>
+		<result column="deletetype" property="deletetype"/>
+		<collection property="owner" column="uId" select="queryUser"></collection>
+		<collection property="aide" column="fId" select="queryUser"></collection>
+	</resultMap>
 	<!-- 查看聊天信息 -->
-	<!-- 删除聊天信息 -->
+	<select id="queryMessage" resultMap="Messages">
+		SELECT * FROM `messages` WHERE 1=1
+			<if test="owner != null">
+				AND `uId` =  #{owner.id}
+			</if>
+			<if test="aide != null">
+			 	AND `fId` = #{aide.id}
+			</if>
+		AND `deletetype` = 0;
+	</select>
 </mapper>

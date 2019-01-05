@@ -135,7 +135,7 @@
 					<textarea id="MessageTxet" class="form-control" rows="3" style="border: 1px solid whitesmoke;font-size: 14px;line-height: 1.6;"></textarea>
 					<div style="margin-top: 7px;margin-bottom: 5px">
 						<input type="button" id="send" onclick="Send('sendUser')" disabled="disabled" value="发送" class="btn btn-success" style="margin-left: 87%;height: 30px;font-size: 14px;padding: 3px 25px;" />
-						<input type="button" onclick="Send('sendUsers')" value="群发" class="btn btn-success" style="margin-left: 87%;height: 30px;font-size: 14px;padding: 3px 25px;display: none;" />
+						<input type="button" onclick="Send('sendUsers')" value="群发" class="btn btn-success" style="height: 30px;font-size: 14px;padding: 3px 25px;display: none;position: absolute;right: 130px" />
 					</div>
 				</div>
 			</div>
@@ -159,12 +159,15 @@
 		$(function() {
 			//开启通讯
 			initSocket();
+			if([[${session.user.id}]] == 2) {
+				$("[value=群发]").show();
+			}
 		})
 		//切换好友发送
-		function cut(name,uid){
+		function cut(name,fid){
 			$("#MessageUser").html(name);
 			$("#Show ul").html("");
-			window.sessionStorage.setItem("uid",uid);
+			window.sessionStorage.setItem("fid",fid);
 			$("#send").prop("disabled",false);
 			
 		}
@@ -207,6 +210,7 @@
 						count = 11;
 					} else {
 						var obj = $.parseJSON(msg);
+						alert(obj.type);
 						if("users" == obj.type) {
 							$(".row:eq(1)").html("");
 							$(".row:eq(2)").html("");
@@ -223,16 +227,20 @@
 										    "</button>";
 										$(".row:eq(1)").append(ht);
 									} else {
-										ht = "<p class=\"bg-dark\" style=\"height: 50px;width: 310px;padding-left:20px;padding-top: 4px;margin-bottom: 0px;border-bottom: 1px solid black;\">"+
+										ht = "<p class=\"bg-dark\" style=\"height: 50px;width: 310px;padding-left: 35px;padding-top: 4px;margin-bottom: 0px;border-bottom: 1px solid black;\">"+
 									    		"<img src=\"/img/"+data.aide.imgName+"\" class=\"img-rounded img-responsive center-block\" width=\"40\" height=\"40\" style=\"border-radius: 5px;\">"+
 									    		"<span style=\"color: white;font-size: 14px;line-height: 20px;margin-left: 5px;vertical-align:top;\">"+data.aide.name+"</span>"+
 									    	"</p>";
 										$(".row:eq(2)").append(ht);
 									}
 								} else {
-									ht = "<p class=\"bg-dark\" style=\"height: 50px;width: 310px;padding-left:20px;padding-top: 4px;margin-bottom: 0px;border-bottom: 1px solid black;\">"+
+									ht = "<p class=\"bg-dark\" style=\"height: 50px;width: 310px;padding-left: 35px;padding-top: 4px;margin-bottom: 0px;border-bottom: 1px solid black;\">"+
 								    		"<img src=\"/img/"+data.aide.imgName+"\" class=\"img-rounded img-responsive center-block\" width=\"40\" height=\"40\" style=\"border-radius: 5px;\">"+
 								    		"<span style=\"color: white;font-size: 14px;line-height: 20px;margin-left: 5px;vertical-align:top;\">"+data.aide.name+"</span>"+
+								    		"<span style=\"font-size: 10px;position: relative;left: 80px;\">"+
+							    				"<button style=\"padding: 1px;border-radius: 25px;border-color: greenyellow;\" onclick=\"ApplyFor('同意',"+data.aide.id+")\"><img src=\"/img/yes.png\" width=\"30\" height=\"26\" style=\"border-radius: 25px;\" title=\"同意\"></button>"+
+							    				"<button style=\"padding: 1px;border-radius: 25px;margin-left: 5px;border-color: red;\" onclick=\"ApplyFor('拒绝',"+data.aide.id+")\"><img src=\"/img/no.png\" width=\"30\" height=\"26\" style=\"border-radius: 25px;\" title=\"拒绝\"></button>"+
+							    			"</span>"+
 								    	 "</p>";
 									$(".row:eq(3)").append(ht);
 								}
@@ -276,8 +284,9 @@
 				if(ws.readyState == 1) {
 					var jsonObj ={};
 					jsonObj["type"] = type ; 
-					jsonObj["content"] = $("#MessageTxet").val(); 
-					jsonObj["uid"] = window.sessionStorage.getItem("uid"); 
+					jsonObj["content"] = $("#MessageTxet").val();
+					jsonObj["uid"] = [[${session.user.id}]]; 
+					jsonObj["fid"] = window.sessionStorage.getItem("fid"); 
 					var jsonStr = JSON.stringify(jsonObj);
 					ws.send(jsonStr);
 					var ht = "<li style=\"margin-top: 2px;overflow: auto;\">"+
@@ -312,6 +321,17 @@
 			}, 270 * 1000); //建议4分半
 		}
 		
+		//好友申请
+		function ApplyFor(type,fid){
+			switch (type) {
+				case '同意':
+					alert("同意"+fid);
+					break;
+				case '拒绝':
+					alert("拒绝"+fid);
+					break;
+			}
+		}
 	</script>
 
 </html>
