@@ -3,7 +3,6 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.accp.chatroom.dao.IWebMessageDao">
 	<!-- 登陆聊天室 -->
 	<select id="LoginUser" resultType="user">
@@ -28,8 +27,8 @@
 	<!-- 查看所有好友 -->
 	<select id="queryFriendList" resultMap="Friend">
 		SELECT * FROM `friend` WHERE 1=1 
-		<if test="obj.id != 2">
-			AND `uId` =  #{obj.id};
+		<if test="uId != 2">
+			AND `uId` =  #{uId};
 		</if>
 	</select>
 	<!-- 查看用户信息 -->
@@ -63,4 +62,12 @@
 			</if>
 		AND `deletetype` = 0;
 	</select>
+	<!-- 消息已读 -->
+	<update id="readMessage">
+		UPDATE 
+			`messages` 
+		SET
+			 `readtype` = 1
+		WHERE `uId` =  #{owner.id} AND `fId` = #{aide.id} ;
+	</update>
 </mapper>

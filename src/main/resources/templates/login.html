@@ -8,43 +8,69 @@
 		<title>清泉聊天网页版测试V1.0</title>
 		<link href="/css/bootstrap.min.css" rel="stylesheet" />
 		<link rel="shortcut icon" href="/img/logo.jpg" />
+		<style>
+			@media all and (max-width:768px) {
+				body{
+					background: none;
+				}
+			}
+			@media (min-width: 970px) {
+				body{
+					background: url(/img/2zrdI1g.jpg) no-repeat 50%;
+					background-size: cover;
+				}
+			}
+		</style>
 	</head>
-
-	<body style="background: url(/img/2zrdI1g.jpg) no-repeat 50%;background-size: auto auto;background-size: cover;height: 400px;">
-		<div class="container" style="margin-top: 10%;">
-			<div class="center-block max-width border-radius " style="width: 370px;margin: auto;">
-					<form action="/c/user/Login" method="post" name="Getform" class="form-control" style="margin-top: 10px;">
-						<h3 style="text-align: center;margin-top: 20px;margin-bottom: 20px;">清泉聊天</h3>
-						<div class="form-group row " >
-						    <label class="col-sm-2 control-label">邮箱</label>
-						    <div class="col-sm-10">
-						      <input type="email" class="form-control" name="email" th:value="${email}" placeholder="请输入邮箱">
+	<body>
+		<div class="container-fluid" style="margin-top: 100px;">
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4">
+					<form action="/c/user/Login" method="post" name="Getform" class="form-horizontal" style="background: white;border-radius: 10px;">
+						<div class="form-group">
+							<h3 class="text-center col-md-12" style="margin-top: 20px;font-weight: bold;">
+								<img src="/img/logo.jpg" class="img-responsive center-block" width="100" />
+								清泉聊天
+							</h3>
+						</div>
+						<div class="form-group" style="margin-top: 30px;">
+						    <label class="col-md-2 col-xs-2 control-label">邮箱</label>
+						    <div class="col-md-9 col-xs-9">
+						    	<div class="input-group">
+								    <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+							      	<input type="email" class="form-control" name="email" th:value="${email}" placeholder="请输入邮箱">
+								</div>
 						    </div>
 						</div>
-						<div class="form-group row " style="margin-top: 30px;">
-						    <label class="col-sm-2 control-label">密码</label>
-						    <div class="col-sm-10">
-						      <input type="password" class="form-control" name="password" th:value="${pwd}" placeholder="请输入密码">
+						<div class="form-group" style="margin-top: 30px;">
+						    <label class="col-md-2 col-xs-2 control-label">密码</label>
+						    <div class="col-md-9 col-xs-9">
+						    	<div class="input-group">
+								    <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+							        <input type="password" class="form-control" name="password" th:value="${pwd}" placeholder="请输入密码">
+								</div>
 						    </div>
 						</div>
-						<div class="form-group row" style="margin-top: 30px;">
-							<button type="button" class="btn btn-primary" style="margin:auto;width: 200px;" onclick="Login()">登陆</button>
+						<div class="form-group" style="margin-top: 30px;">
+							<button class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3 btn btn-primary">登陆</button>		
 						</div>
-						<div class="form-group row" style="margin-top: 30px;text-align: center;" >
-							<span id="msg" th:text="${msg}" style="margin: auto;color:red"></span>						
+						<div class="form-group text-center" style="margin-top: 20px;" >
+							<span id="msg" th:text="${msg}" style="color:red"></span>						
 						</div>
-						<div class="form-group row" style="margin: auto;position: relative;left: 185px;">
-							目前版本：V1.0测试版
+						<div class="form-group" style="padding-bottom: 10px;">
+							<span class="col-md-offset-8 col-xs-offset-7">目前版本：V1.0测试版</span>
 						</div>
-						
 					</form>
-					
+				</div>
 			</div>
-			<div class="center-block max-width border-radius" style="margin: auto;position: absolute;left: 530px;margin-top: 10px;">
-				<span style="color: red;">提示：</span>本版本聊天记录储存时间至（每日23:59分）会自动删除，如有需要自行保存<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新功能陆续更新...请敬请期待~
+			<div class="row" style="margin-top: 20px;">
+				<div class="col-md-5 col-md-offset-4">
+					<span style="color: red;">提示：</span>
+					本版本聊天记录储存时间至（每日23:59分）会自动删除，如有需要自行保存<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新功能陆续更新...请敬请期待~~
+				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="/js/jquery-slim.min.js"></script>
+		<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
 		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 			document.onkeydown = function(e){

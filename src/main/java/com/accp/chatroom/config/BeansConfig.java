@@ -20,7 +20,14 @@ import com.github.pagehelper.PageHelper;
 @MapperScan(basePackages = {"com.accp.chatroom.dao"})
 @EnableTransactionManagement
 public class BeansConfig {
-
+	/**
+	 * 
+	    * @Title: pageHelper
+	    * @Description: 分页插件
+	    * @param @return    参数
+	    * @return PageHelper    返回类型
+	    * @throws
+	 */
 	@Bean
 	public PageHelper pageHelper() {
 		PageHelper pageHelper = new PageHelper();

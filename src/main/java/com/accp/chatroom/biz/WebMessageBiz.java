@@ -40,8 +40,8 @@ public class WebMessageBiz {
 	}
 
 	// 查看好友
-	public List<friend> queryFriendList(user obj) {
-		return dao.queryFriendList(obj);
+	public List<friend> queryFriendList(Integer uId) {
+		return dao.queryFriendList(uId);
 	}
 
 	// 发送消息
@@ -65,4 +65,5 @@ public class WebMessageBiz {
 		}
 		return count;
 	}
+	
 }

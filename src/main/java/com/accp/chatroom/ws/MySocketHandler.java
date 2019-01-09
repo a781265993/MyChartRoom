@@ -1,7 +1,6 @@
 package com.accp.chatroom.ws;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,13 +18,11 @@ import org.springframework.stereotype.Controller;
 
 import com.accp.chatroom.biz.WebMessageBiz;
 import com.accp.chatroom.pojo.friend;
-import com.accp.chatroom.pojo.messages;
 import com.accp.chatroom.pojo.sending;
 import com.accp.chatroom.pojo.user;
 import com.accp.chatroom.util.JsonObjectUtil;
 import com.accp.chatroom.ws.cfg.HttpSessionConfigurator;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 @ServerEndpoint(value = "/ws/sys", configurator = HttpSessionConfigurator.class)
 @Controller
@@ -66,24 +63,29 @@ public class MySocketHandler {
 							int offline = 0;
 							// 申请数量
 							int applyFor = 0;
-							for (friend f : messageBiz.queryFriendList(_user)) {
-								if (f.getType() == 0) {
-									applyFor++;
-								} else if (f.getAide().getType() == 1) {
-									online++;
-								} else if (f.getAide().getType() == 0) {
-									offline++;
+							if(uId != null) {
+								for (friend f : messageBiz.queryFriendList(uId)) {
+									if (f.getType() == 0) {
+										applyFor++;
+									} else if (f.getAide().getType() == 1) {
+										online++;
+									} else if (f.getAide().getType() == 0) {
+										offline++;
+									}
 								}
+								if (online > Online || offline > Offline || applyFor > ApplyFor) {
+									util.removeContent();
+									util.setContent(messageBiz.queryFriendList(uId));
+									usersMap.get(uId).getBasicRemote().sendText(util.toJSONString());
+									Online = online;
+									Offline = offline;
+									ApplyFor = applyFor;
+								}
+								Thread.sleep(30 * 1000);
+							} else {
+								break;
 							}
-							if (online > Online || offline > Offline || applyFor > ApplyFor) {
-								util.removeContent();
-								util.setContent(messageBiz.queryFriendList(_user));
-								usersMap.get(uId).getBasicRemote().sendText(util.toJSONString());
-								Online = online;
-								Offline = offline;
-								ApplyFor = applyFor;
-							}
-							Thread.sleep(30 * 1000);
+						
 						} catch (Exception e) {
 							break;
 						}
@@ -96,14 +98,14 @@ public class MySocketHandler {
 				public void run() {
 					// 收件人对象
 					user aide = new user();
-					aide.setId(uId);
 					// 总聊天记录
 					int Count = 0;
 					// JSON序列化
 					JsonObjectUtil util = new JsonObjectUtil();
-					util.setType("message");
+					util.setType("newMessage");
 					while (true) {
 						try {
+							aide.setId(uId);
 							int count = messageBiz.listMessages(null, aide).size();
 							if(count > Count) {
 								util.setContent(messageBiz.listMessages(null, aide));
@@ -133,6 +135,7 @@ public class MySocketHandler {
 			User.setId(uId);
 			User.setType(0);
 			messageBiz.OverUser(User);
+			uId = null;
 		}
 	}
 
@@ -140,11 +143,6 @@ public class MySocketHandler {
 	@OnError
 	public void onerror(Session session, Throwable e) {
 		System.out.println("通讯异常");
-		try {
-			session.getBasicRemote().sendText("Over");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
 	}
 
 	// 发送消息 这个方法参数的不能更改
